@@ -6,32 +6,35 @@ import java.util.regex.Pattern;
 
 public class WordCounter {
     public static void main(String[] args) {
-        StringBuilder sbf
+        StringBuilder inputText
                 = new StringBuilder();
         for (String arg : args) {
-            sbf.append(arg);
-            sbf.append(" ");
+            inputText.append(arg);
+            inputText.append(" ");
         }
-        Map<String, Integer> textMap = new HashMap<>();
-        List<TextEntry> resultList = new ArrayList<>();
+        Map<String, Integer> wordsMap = new HashMap<>();
+        List<TextEntry> resultWordList = new ArrayList<>();
 
         Pattern pattern = Pattern.compile("\\w+", Pattern.UNICODE_CHARACTER_CLASS
                 | Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(sbf);
+        Matcher matcher = pattern.matcher(inputText);
+        //Extracting words
         String currentWord;
         while (matcher.find()){
             currentWord = matcher.group().toLowerCase();
-            if(textMap.containsKey(currentWord)){
-                textMap.put(currentWord, (textMap.get(currentWord)+1) );
+            if(wordsMap.containsKey(currentWord)){
+                wordsMap.put(currentWord, (wordsMap.get(currentWord)+1) );
             }else {
-                textMap.put(currentWord,1);
+                wordsMap.put(currentWord,1);
             }
         }
-        for(String key : textMap.keySet()){
-            resultList.add(new TextEntry(key, textMap.get(key)));
+
+        for(String key : wordsMap.keySet()){
+            resultWordList.add(new TextEntry(key, wordsMap.get(key)));
         }
-        Collections.sort(resultList);
-        for(TextEntry text: resultList){
+
+        Collections.sort(resultWordList);
+        for(TextEntry text: resultWordList){
             System.out.println(text.getText() + " : " + text.getCount());
         }
 
