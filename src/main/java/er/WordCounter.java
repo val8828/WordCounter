@@ -6,41 +6,37 @@ import java.util.regex.Pattern;
 
 public class WordCounter {
     public static void main(String[] args) {
-        StringBuilder inputText
-                = new StringBuilder();
-        for (String arg : args) {
-            inputText.append(arg);
-            inputText.append(" ");
-        }
+
         Map<String, Integer> wordsMap = new HashMap<>();
         List<TextEntry> resultWordList = new ArrayList<>();
 
         Pattern pattern = Pattern.compile("\\w+", Pattern.UNICODE_CHARACTER_CLASS
                 | Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(inputText);
+        Matcher matcher = pattern.matcher(Arrays.toString(args));//  inputText);
         //Extracting words
         String currentWord;
         while (matcher.find()){
             currentWord = matcher.group().toLowerCase();
-            if(wordsMap.containsKey(currentWord)){
-                wordsMap.put(currentWord, (wordsMap.get(currentWord)+1) );
+            Integer count = wordsMap.get(currentWord);
+            if(count!=null){
+                wordsMap.put(currentWord,  ++count );
             }else {
                 wordsMap.put(currentWord,1);
             }
         }
 
-        for(String key : wordsMap.keySet()){
-            resultWordList.add(new TextEntry(key, wordsMap.get(key)));
+        for(Map.Entry entry : wordsMap.entrySet()){
+            resultWordList.add(new TextEntry((String) entry.getKey(), (Integer) entry.getValue()));
         }
+        resultWordList.sort(Comparator.comparing(TextEntry::getCount).reversed());
 
-        Collections.sort(resultWordList);
         for(TextEntry text: resultWordList){
             System.out.println(text.getText() + " : " + text.getCount());
         }
 
     }
 }
-class TextEntry implements Comparable<TextEntry>{
+class TextEntry {
     String text;
     int count;
 
@@ -57,8 +53,4 @@ class TextEntry implements Comparable<TextEntry>{
         return count;
     }
 
-    @Override
-    public int compareTo(TextEntry o) {
-        return Integer.compare(o.count,count);
-    }
 }
